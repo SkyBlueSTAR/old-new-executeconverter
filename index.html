@@ -1,0 +1,31 @@
+<head>
+    <meta charset="UTF-8">
+    <title>execute exchanger</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <p>お問合せ内容：<br>
+        <textarea name="exchangeText" rows="25" id="exchangeText"></textarea>
+    </p>
+    <div>
+        <input type="button" value="変換" id="exchangeButton">
+    </div>
+    <p id="msg"></p>
+
+    <script>
+        function buttonClick(){
+          let temp = reviewTextarea.value.replace('/execute\s*(\S.*\S|\S)\s*((?:~\d*\s*|\d+\s*){3}|(?:\^\d*\s*){3})/g','execute as $1 at @s positioned $2 run ');
+          console.log(temp);
+          console.log("execute @a ~~~ ".replace('/execute\s*(\S.*\S|\S)\s*((?:~\d*\s*|\d+\s*){3}|(?:\^\d*\s*){3})/g','execute as $1 at @s positioned $2 run '));
+          temp = temp.replace('/run detect\s*((?:~\d*\s*|\d+\s*){3}|(?:\^\d*\s*){3})(\S+)\s+(\d+)\s+/giu', 'if block $1 $2 $3 run ');
+          temp = temp.replace('positioned ~~~ ', ' ');
+          msg.innerText = temp;
+        }
+        
+        let reviewTextarea = document.getElementById('exchangeText');
+        let msg = document.getElementById('msg');
+        
+        let exchangeButton = document.getElementById('exchangeButton');
+        exchangeButton.addEventListener('click', buttonClick);
+        </script>
+</body>
