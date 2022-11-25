@@ -16,7 +16,6 @@
         function buttonClick(){
           let temp = reviewTextarea.value.replace('/execute\s*(\S.*\S|\S)((?:\s*~-?\d*(?:\.\d+)?|\s+-?\d+(?:\.\d+)?){3}|(?:\s*\^-?\d*(?:\.\d+)?){3})\s*/g','execute as $1 at @s positioned $2 run ');
           console.log(temp);
-          console.log("execute @a ~~~ ".replace('/execute\s*(\S.*\S|\S)\s*((?:~\d*\s*|\d+\s*){3}|(?:\^\d*\s*){3})/g','execute as $1 at @s positioned $2 run '));
           temp = temp.replace('/run detect\s*((?:\s*~-?\d*(?:\.\d+)?|\s+-?\d+(?:\.\d+)?){3}|(?:\s*\^-?\d*(?:\.\d+)?){3})\s*(\S+)\s+(\d+)\s+/giu', 'if block $1 $2 $3 run ');
           temp = temp.replace('positioned ~~~ ', '');
           temp = temp.replace('run execute ', '');
