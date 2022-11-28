@@ -17,7 +17,7 @@
           let temp = reviewTextarea.value.replace(/execute\s*("\S.*\S"|\S*|@(?:[parse]|initiator)(?:\[.*?\])?)((?:\s*~-?\d*(?:\.\d+)?|\s+-?\d+(?:\.\d+)?){3}|(?:\s*\^-?\d*(?:\.\d+)?){3})\s*/g,'execute as $1 at @s positioned$2 run ');
           temp = temp.replace(/run detect((?:\s*~-?\d*(?:\.\d+)?|\s+-?\d+(?:\.\d+)?){3}|(?:\s*\^-?\d*(?:\.\d+)?){3})\s*(\S+)\s+(-?\d+)\s+/g, 'if block $1 $2 $3 run ');
           temp = temp.replace(/positioned\s*~\s*~\s*~\s/g, '');
-          temp = temp.replace(/run\sexecute\s/, '');
+          temp = temp.replace(/run\sexecute\s/g, '');
           msg.innerText = temp;
         }
         
