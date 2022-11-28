@@ -18,6 +18,7 @@
           temp = temp.replace(/run detect((?:\s*~-?\d*(?:\.\d+)?|\s+-?\d+(?:\.\d+)?){3}|(?:\s*\^-?\d*(?:\.\d+)?){3})\s*(\S+)\s+(-?\d+)\s+/g, 'if block $1 $2 $3 run ');
           temp = temp.replace(/positioned\s*~\s*~\s*~\s/g, '');
           temp = temp.replace(/run\sexecute\s/g, '');
+          temp = temp.replace(/as\s@s\sat\s@s\s/g, '');
           msg.innerText = temp;
         }
         
