@@ -19,11 +19,11 @@
     <script>
         function buttonClick(){
           let temp = reviewTextarea.value.replace(/execute\s*((?<!\\)"(?:[^"]|(?<=\\)")*?(?<!\\)"|(?:[^\s"]|(?<=\\)")+?|@(?:[parse]|initiator)\s*(?:\[(?:(?:[^"]|(?<=\\)")*?(?<!\\)"(?:[^"]|(?<=\\)")*?(?<!\\)")*?(?:[^"]|(?<=\\)")*?\])?)((?:\s*~-?\d*(?:\.\d+)?|\s+-?\d+(?:\.\d+)?){3}|(?:\s*\^-?\d*(?:\.\d+)?){3})\s*/g,'execute as $1 at @s positioned$2 run ');
-          temp = temp.replace(/run detect((?:\s*~-?\d*(?:\.\d+)?|\s+-?\d+(?:\.\d+)?){3}|(?:\s*\^-?\d*(?:\.\d+)?){3})\s*(\S+)\s+(-?\d+)\s+/g, 'if block $1 $2 $3 run ');
-          temp = temp.replace(/positioned\s*~\s*~\s*~\s/g, '');
-          temp = temp.replace(/run\sexecute\s/g, '');
-          temp = temp.replace(/as\s@s\sat\s@s\s/g, '');
-          temp = temp.replace(/execute\srun\s/g, '');
+          temp = temp.replace(/(^(?:(?:[^"]|(?<=\\)")*?(?<!\\)"(?:[^"]|(?<=\\)")*?(?<!\\)")*?(?:[^"]|(?<=\\)")*?)run detect((?:\s*~-?\d*(?:\.\d+)?|\s+-?\d+(?:\.\d+)?){3}|(?:\s*\^-?\d*(?:\.\d+)?){3})\s*(\S+)\s+(-?\d+)\s+/g, '$1if block$2 $3 $4 run ');
+          temp = temp.replace(/(^(?:(?:[^"]|(?<=\\)")*?(?<!\\)"(?:[^"]|(?<=\\)")*?(?<!\\)")*?(?:[^"]|(?<=\\)")*?)positioned\s*~\s*~\s*~\s/g, '$1');
+          temp = temp.replace(/(^(?:(?:[^"]|(?<=\\)")*?(?<!\\)"(?:[^"]|(?<=\\)")*?(?<!\\)")*?(?:[^"]|(?<=\\)")*?)run\sexecute\s/g, '$1');
+          temp = temp.replace(/(^(?:(?:[^"]|(?<=\\)")*?(?<!\\)"(?:[^"]|(?<=\\)")*?(?<!\\)")*?(?:[^"]|(?<=\\)")*?)as\s@s\sat\s@s\s/g, '$1');
+          temp = temp.replace(/(^(?:(?:[^"]|(?<=\\)")*?(?<!\\)"(?:[^"]|(?<=\\)")*?(?<!\\)")*?(?:[^"]|(?<=\\)")*?)execute\srun\s/g, '$1');
           msg.innerText = temp;
         }
         
