@@ -1,0 +1,91 @@
+<head>
+    <meta charset="UTF-8">
+    <title>execute converter v1.1</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <h1>execute converter v1.1 made by SkyBlueのSTAR</h1>
+    <p>
+        テキストボックスに古い構文のexecuteを含んだコマンドを書いて「変換」のボタンを押すと、executeを新しい構文に置き換えたコマンドがボタンの下に生成されます。<br>v1.1追加機能:mcstructureファイルの変換に(試験的に)対応しました。変換ボタンの右にある「ファイルを選択」ボタンを押してファイルを選択すると、変換されたファイルがダウンロードされます。(不具合がなければこのまま実装します。)<br>紹介になってない紹介動画(v1.1追加機能含めバグ報告もこちらへ)<br><iframe width="560" height="315" src="https://www.youtube.com/embed/3NOMyYJY6oM" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe><br>
+    </p>
+    <p>変換前構文：<br>
+        <textarea name="exchangeText" rows="25" id="exchangeText"></textarea>
+    </p>
+    <div>
+        <table>
+            <tr>
+                <td><input type="button" value="変換" id="exchangeButton"></td>
+                <td><input type="file" name="nbtfile" id="nbtFile" /></td>
+            </tr>
+        </table>
+    </div>
+    <p id="msg"></p>
+    
+    <script src="./pnbt.js"></script>
+
+    <script>
+        const nbt = require('prismarine-nbt');
+        const { Buffer } = require('buffer');
+        window.addEventListener('load',()=>{
+            const input = document.getElementById('nbtFile');
+            input.addEventListener('change',ev=>{
+                inputFile = ev.target;
+                const reader = new FileReader();
+                reader.onload=()=>{
+                    loadStructure(reader);
+                };
+                reader.readAsArrayBuffer(input.files[0]);
+            })
+        })
+
+        function buttonClick(){
+            msg.innerText = executeConvert(reviewTextarea.value);
+        }
+
+        let reviewTextarea = document.getElementById('exchangeText');
+        let msg = document.getElementById('msg');
+
+        let exchangeButton = document.getElementById('exchangeButton');
+        exchangeButton.addEventListener('click', buttonClick);
+
+        function executeConvert(cmdData){
+            let temp = cmdData.replace(/execute\s*((?<!\\)"(?:[^"]|(?<=\\)")*?(?<!\\)"|(?:[^\s"]|(?<=\\)")+?|@(?:[parse]|initiator)\s*(?:\[(?:(?:[^"]|(?<=\\)")*?(?<!\\)"(?:[^"]|(?<=\\)")*?(?<!\\)")*?(?:[^"]|(?<=\\)")*?\])?)((?:\s*~-?\d*(?:\.\d+)?|\s+-?\d+(?:\.\d+)?){3}|(?:\s*\^-?\d*(?:\.\d+)?){3})\s*/g,'execute as $1 at @s positioned$2 run ');
+            temp = temp.replace(/(^(?:(?:[^"]|(?<=\\)")*?(?<!\\)"(?:[^"]|(?<=\\)")*?(?<!\\)")*?(?:[^"]|(?<=\\)")*?)run detect((?:\s*~-?\d*(?:\.\d+)?|\s+-?\d+(?:\.\d+)?){3}|(?:\s*\^-?\d*(?:\.\d+)?){3})\s*(\S+)\s+(-?\d+)\s+/g, '$1if block$2 $3 $4 run ');
+            temp = temp.replace(/(^(?:(?:[^"]|(?<=\\)")*?(?<!\\)"(?:[^"]|(?<=\\)")*?(?<!\\)")*?(?:[^"]|(?<=\\)")*?)positioned\s*~\s*~\s*~\s/g, '$1');
+            temp = temp.replace(/(^(?:(?:[^"]|(?<=\\)")*?(?<!\\)"(?:[^"]|(?<=\\)")*?(?<!\\)")*?(?:[^"]|(?<=\\)")*?)run\sexecute\s/g, '$1');
+            temp = temp.replace(/(^(?:(?:[^"]|(?<=\\)")*?(?<!\\)"(?:[^"]|(?<=\\)")*?(?<!\\)")*?(?:[^"]|(?<=\\)")*?)as\s@s\sat\s@s\s/g, '$1');
+            temp = temp.replace(/(^(?:(?:[^"]|(?<=\\)")*?(?<!\\)"(?:[^"]|(?<=\\)")*?(?<!\\)")*?(?:[^"]|(?<=\\)")*?)execute\srun\s/g, '$1');
+            return temp;
+        }
+        
+        async function loadStructure(reader) {
+            let value = "";
+            try {
+                const { parsed } = await nbt.parse(Buffer.from(reader.result));
+                for(let obj of Object.keys(parsed.value.structure.value.palette.value.default.value.block_position_data.value)){
+                    try{
+                        parsed.value.structure.value.palette.value.default.value.block_position_data.value[obj].value.block_entity_data.value.Version.value = 25;
+                        parsed.value.structure.value.palette.value.default.value.block_position_data.value[obj].value.block_entity_data.value.Command.value = executeConvert(parsed.value.structure.value.palette.value.default.value.block_position_data.value[obj].value.block_entity_data.value.Command.value);
+                    } catch(e){
+                    }
+                }
+                value = JSON.stringify(parsed, null, 2);
+            } catch(e) {
+                console.log(e);
+            }
+            if(value !== ""){
+                let stru;
+                try{
+                    stru = nbt.writeUncompressed(JSON.parse(value),'little');
+                }catch(e){
+                    return;
+                }
+                const downloader = document.createElement('a');
+                downloader.href = window.URL.createObjectURL(new Blob([stru]));
+                downloader.download = 'convert_'+ document.getElementById('nbtFile').files[0].name;
+                downloader.click();
+                document.getElementById('nbtFile').value = '';
+            }
+        }
+        </script>
+</body>
